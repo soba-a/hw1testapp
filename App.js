@@ -1,81 +1,59 @@
 import * as React from 'react';
 import {useState} from 'react';
-import { Button, SafeAreaView, Image} from 'react-native';
+import { Button, SafeAreaView, Image, KeyboardAvoidingView, Vibration} from 'react-native';
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 import {Text, TextInput, View, StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
-
-const Stack = createNativeStackNavigator();
-
-const CatTranslator = () => {
-  const [text, setText] = useState('');
-  return (
-    <View style = {styles.centered}>
-      <TextInput
-        style={styles.textInput}
-          placeholder='Type here to translate!'
-          onChangeText={text => setText(text)}
-          defaultValue={text}
-      />
-      <Text style={{padding: 10, fontSize: 42}}>
-        {text.split(' ').map((word) => word && 'meow').join(' ')}
-      </Text>
-    </View>
-  );
-}
-
-const Cat = props => {
-  return (
-    <Text>Hello, I am your cat, {props.name}!</Text>
-  );
-}
-
-const HomeScreen = ({ navigation }) => {
-  return (
-    <Button
-      title="Go to maru's profile"
-      onPress={() =>
-        navigation.navigate('Profile', { name: 'maru' })
-      }
-    />
-  );
-}
-
-const ProfileScreen = ({ navigation, route}) => {
-  return (
-    <View style ={styles.centered}>
-      <GetPhotoFromApi/>
-      <Cat name = 'maru'/>
-      <CatTranslator/>
-    </View>
-  );
-}
+import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { VStack } from 'react-native-flex-layout'
+import { withAuthenticator } from '@aws-amplify/ui-react-native';
 
 const styles = StyleSheet.create({
   centered: {
-    flex: 1,
-    justifyContent: 'center',
     alignItems: 'center',
-    paddingHorizontal: 10,
-    paddingVertical: 10
+    padding: 10
   },
   textInput: {
+    flexDirection: 'row',
     height: 40,
+    width: 200,
     margin: 12,
-    borderWidth: 1,
+    borderWidth: 2,
   },
   container: {
     flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
+    flexDirection: 'column',
+    alignContent: 'flex-start',
+    justifyContent: 'flex-start',},
   image: {
-    width: 320,
+    width: 400,
     height: 160,
+    margin: 10
   },
 });
+
+const Tab = createBottomTabNavigator();
+
+const CatTranslator = props => {
+  const [text, setText] = useState('');
+  return (
+    <KeyboardAvoidingView style = {styles.centered} behavior='padding'>
+      <GetPhotoFromApi/>
+      <Text>Hello, I am your cat, {props.name}!</Text>
+      <TextInput
+        style={styles.textInput}
+        placeholder='Type here to translate!'
+        onChangeText={text => setText(text)}
+        defaultValue={text}
+      />
+      <Text style={{padding: 10, fontSize: 30}}>
+        {text.split(' ').map((word) => word && 'meow'.concat(' ' + props.flair)).join(' ')}
+      </Text>
+    </KeyboardAvoidingView>
+  );
+}
 
 const GetPhotoFromApi = () => {
   const [imageUrl, setImageUrl] = useState('');
@@ -104,35 +82,58 @@ const GetPhotoFromApi = () => {
   }, []);
 
   return (
-    <View style={styles.container}>
+    <KeyboardAvoidingView>
       {error ? (
         <Text>Error: {error}</Text>
       ) : imageUrl ? (
         <Image
           source={{ uri: imageUrl }}
           style={styles.image}
-          resizeMode="contain"
+          resizeMode="cover"
         />
       ) : (
         <Text>Loading...</Text>
       )}
-    </View>
+    </KeyboardAvoidingView>
   );
 };
+
+const HomeScreen = ({ navigation }) => {
+  return (
+    <Text>Welcome!</Text> 
+  );
+}
+
+const ProfileScreen = ({ navigation, route}) => {
+  return (
+    <KeyboardAvoidingView style = 'container' behavior='padding'>
+        <CatTranslator flair = ':3' name = {'maru'}/>
+    </KeyboardAvoidingView>
+  );
+}
+
+const ChatsScreen = ({ navigation, route}) => {
+  return (
+    <KeyboardAvoidingView style = 'container' behavior='padding'>
+        <CatTranslator flair = '😺' name = {'mochi'}/>
+    </KeyboardAvoidingView>
+  );
+}
 
 const App = () => {
   return (
     <NavigationContainer>
-      <Stack.Navigator>
-        <Stack.Screen
+      <Tab.Navigator>
+        <Tab.Screen
           name="Home"
           component={HomeScreen}
           options={{ title: 'Welcome' }}
         />
-        <Stack.Screen name="Profile" component={ProfileScreen} />
-      </Stack.Navigator>
+        <Tab.Screen name="Profile" component={ProfileScreen} />
+        <Tab.Screen name="Chats" component={ChatsScreen} />
+      </Tab.Navigator>
     </NavigationContainer>
   );
 }
 
-export default App;
+export default withAuthenticator(App);
