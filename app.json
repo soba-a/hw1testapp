@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "testapp",
-    "slug": "testapp",
+    "slug": "hw1testapp",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/aladdin.png",
@@ -15,7 +15,8 @@
       "**/*"
     ],
     "ios": {
-      "supportsTablet": true
+      "supportsTablet": true,
+      "bundleIdentifier": "com.soba.hw1testapp"
     },
     "android": {
       "adaptiveIcon": {
@@ -25,6 +26,12 @@
     },
     "web": {
       "favicon": "./assets/favicon.png"
-    }
+    },
+    "extra": {
+      "eas": {
+        "projectId": "2adf5e26-ad49-483d-9795-2f4baae8a8f3"
+      }
+    },
+    "owner": "soba"
   }
 }
