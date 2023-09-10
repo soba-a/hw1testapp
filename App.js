@@ -1,14 +1,16 @@
 import * as React from 'react';
 import {useState} from 'react';
-import { Button, SafeAreaView, Image, KeyboardAvoidingView, Vibration} from 'react-native';
-import { SafeAreaProvider } from 'react-native-safe-area-context';
+import { Image, KeyboardAvoidingView, Button} from 'react-native';
 import {Text, TextInput, View, StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
-import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { useEffect } from 'react';
+import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import { VStack } from 'react-native-flex-layout'
 import { withAuthenticator } from '@aws-amplify/ui-react-native';
+import { Amplify, Auth } from 'aws-amplify';
+import awsExports from './aws-exports';
+Amplify.configure(awsExports);
+Auth.configure(awsExports);
 
 const styles = StyleSheet.create({
   centered: {
@@ -33,8 +35,6 @@ const styles = StyleSheet.create({
     margin: 10
   },
 });
-
-const Tab = createBottomTabNavigator();
 
 const CatTranslator = props => {
   const [text, setText] = useState('');
@@ -72,7 +72,6 @@ const GetPhotoFromApi = () => {
       })
       .then((data) => {
         const randomIndex = Math.floor(Math.random() * 50);
-        console.log(randomIndex);
         setImageUrl(data["hits"][randomIndex].largeImageURL);
       })
       .catch((error) => {
@@ -98,13 +97,56 @@ const GetPhotoFromApi = () => {
   );
 };
 
-const HomeScreen = ({ navigation }) => {
+
+const ChatsListScreen = ({navigation, route}) => {
   return (
-    <Text>Welcome!</Text> 
+    <Button title="Go to Chat" onPress={() => navigation.navigate('ChatScreen')} />
   );
 }
 
-const ProfileScreen = ({ navigation, route}) => {
+const ChatScreen = ({navigation, route}) => {
+  return (
+      <Text>Chat with mochi!</Text>
+  );
+}
+
+async function signOut() {
+  try {
+    await Auth.signOut({ global: true });
+  } catch (error) {
+    console.log('error signing out: ', error);
+  }
+}
+
+const Stack = createNativeStackNavigator();
+
+const Tab = createBottomTabNavigator();
+
+const MyTabs = () => {
+  return (
+    <NavigationContainer>
+      <Tab.Navigator>
+        <Tab.Screen
+          name="Home"
+          component={HomeTab}
+          options={{ title: 'Welcome' }}
+        />
+        <Tab.Screen name="Profile" component={ProfileTab} />
+        <Tab.Screen name="Chats" component={ChatsTab} />
+      </Tab.Navigator>
+    </NavigationContainer>
+  );
+}
+const HomeTab = ({ navigation }) => {
+  return (
+    <KeyboardAvoidingView style = 'container' behavior='padding'>
+      <Text>Welcome!</Text> 
+      <Button title="Sign Out" onPress={signOut} />
+    </KeyboardAvoidingView>
+  );
+}
+
+const ProfileTab = ({ navigation, route}) => {
   return (
     <KeyboardAvoidingView style = 'container' behavior='padding'>
         <CatTranslator flair = ':3' name = {'maru'}/>
@@ -112,27 +154,18 @@ const ProfileScreen = ({ navigation, route}) => {
   );
 }
 
-const ChatsScreen = ({ navigation, route}) => {
+const ChatsTab = ({ navigation, route}) => {
   return (
-    <KeyboardAvoidingView style = 'container' behavior='padding'>
-        <CatTranslator flair = '😺' name = {'mochi'}/>
-    </KeyboardAvoidingView>
+      <Stack.Navigator>
+        <Stack.Screen name="ChatsListScreen" options = {{headerShown: false}} component={ChatsListScreen} />
+        <Stack.Screen name="Chat" component={ChatScreen} />
+      </Stack.Navigator>
   );
 }
 
 const App = () => {
   return (
-    <NavigationContainer>
-      <Tab.Navigator>
-        <Tab.Screen
-          name="Home"
-          component={HomeScreen}
-          options={{ title: 'Welcome' }}
-        />
-        <Tab.Screen name="Profile" component={ProfileScreen} />
-        <Tab.Screen name="Chats" component={ChatsScreen} />
-      </Tab.Navigator>
-    </NavigationContainer>
+    <MyTabs/>
   );
 }
 
