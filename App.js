@@ -7,7 +7,7 @@ import { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { withAuthenticator } from '@aws-amplify/ui-react-native';
-import { Amplify, Auth } from 'aws-amplify';
+import { Amplify, Auth, API} from 'aws-amplify';
 import awsExports from './aws-exports';
 Amplify.configure(awsExports);
 Auth.configure(awsExports);
@@ -54,6 +54,42 @@ const CatTranslator = props => {
     </KeyboardAvoidingView>
   );
 }
+
+const GetAmplifyApi = () => {
+  const [apiResp, setApiResp] = useState('');
+  const [error, setError] = useState(null);
+
+  useEffect(() => {
+    fetch('https://q8w9a8k360.execute-api.us-east-1.amazonaws.com/staging', {
+      method: 'GET'
+    })
+      .then( async (response) => {
+        if (!response.ok) {
+          const errorText = await response.text();
+          throw new Error(`Network response was not ok: ${errorText}`);
+        }
+        console.log(response);
+        setApiResp(response);
+        return response.json();
+      })
+      .catch((error) => {
+        setError(error.message);
+        console.error('Error:', error);
+      });
+  }, []);
+
+  return (
+    <KeyboardAvoidingView>
+      {error ? (
+        <Text>Error: {error}</Text>
+      ) : apiResp ? (
+        <Text>{apiResp}</Text>
+      ) : (
+        <Text>Loading...</Text>
+      )}
+    </KeyboardAvoidingView>
+  );
+};
 
 const GetPhotoFromApi = () => {
   const [imageUrl, setImageUrl] = useState('');
@@ -140,7 +176,8 @@ const MyTabs = () => {
 const HomeTab = ({ navigation }) => {
   return (
     <KeyboardAvoidingView style = 'container' behavior='padding'>
-      <Text>Welcome!</Text> 
+      <GetAmplifyApi/>
+      <Text>Welcome! Let's translate what your cat is saying by going to the Chats tab!</Text> 
       <Button title="Sign Out" onPress={signOut} />
     </KeyboardAvoidingView>
   );

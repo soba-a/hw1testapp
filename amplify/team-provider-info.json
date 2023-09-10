@@ -14,6 +14,15 @@
     "categories": {
       "auth": {
         "testapp": {}
+      },
+      "function": {
+        "CustomerHandler": {
+          "deploymentBucketName": "amplify-testapp-staging-214748-deployment",
+          "s3Key": "amplify-builds/CustomerHandler-4e434669736772497636-build.zip"
+        }
+      },
+      "api": {
+        "hw1testapp": {}
       }
     }
   }
