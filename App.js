@@ -60,7 +60,7 @@ const GetAmplifyApi = () => {
   const [error, setError] = useState(null);
 
   useEffect(() => {
-    fetch('https://q8w9a8k360.execute-api.us-east-1.amazonaws.com/staging', {
+    fetch('https://q8w9a8k360.execute-api.us-east-1.amazonaws.com/staging/customers/1', {
       method: 'GET'
     })
       .then( async (response) => {
@@ -68,9 +68,9 @@ const GetAmplifyApi = () => {
           const errorText = await response.text();
           throw new Error(`Network response was not ok: ${errorText}`);
         }
-        console.log(response);
-        setApiResp(response);
-        return response.json();
+        setApiResp(await response.json());
+
+        console.log(apiResp.message);
       })
       .catch((error) => {
         setError(error.message);
@@ -83,7 +83,7 @@ const GetAmplifyApi = () => {
       {error ? (
         <Text>Error: {error}</Text>
       ) : apiResp ? (
-        <Text>{apiResp}</Text>
+        <Text>{apiResp.message}</Text>
       ) : (
         <Text>Loading...</Text>
       )}
@@ -134,18 +134,6 @@ const GetPhotoFromApi = () => {
 };
 
 
-const ChatsListScreen = ({navigation, route}) => {
-  return (
-    <Button title="Go to Chat" onPress={() => navigation.navigate('ChatScreen')} />
-  );
-}
-
-const ChatScreen = ({navigation, route}) => {
-  return (
-      <Text>Chat with mochi!</Text>
-  );
-}
-
 async function signOut() {
   try {
     await Auth.signOut({ global: true });
@@ -186,17 +174,44 @@ const HomeTab = ({ navigation }) => {
 const ProfileTab = ({ navigation, route}) => {
   return (
     <KeyboardAvoidingView style = 'container' behavior='padding'>
-        <CatTranslator flair = ':3' name = {'maru'}/>
+        <Text>Welcome to the profile screen!</Text>
     </KeyboardAvoidingView>
   );
 }
 
 const ChatsTab = ({ navigation, route}) => {
   return (
-      <Stack.Navigator>
-        <Stack.Screen name="ChatsListScreen" options = {{headerShown: false}} component={ChatsListScreen} />
-        <Stack.Screen name="Chat" component={ChatScreen} />
-      </Stack.Navigator>
+    <MyStack/>
+  );
+}
+
+const MyStack = ({ navigation, route}) => {
+  return (
+    <Stack.Navigator>
+      <Stack.Screen name="ChatsListScreen" options = {{headerShown: false}} component={ChatsListScreen} />
+      <Stack.Screen name="ChatScreen" options = {{headerShown: false}} component={ChatScreen} />
+      <Stack.Screen name="ChatScreen2" options = {{headerShown: false}} component={ChatScreen2} />
+    </Stack.Navigator>
+  )
+}
+
+const ChatsListScreen = ({navigation, route}) => {
+  return (
+    <View>
+      <Button title="Translate Mochi" onPress={() => navigation.navigate('ChatScreen')} />
+      <Button title="Translate Maru" onPress={() => navigation.navigate('ChatScreen2')} />
+    </View>
+  );
+}
+
+const ChatScreen = ({navigation, route}) => {
+  return (
+      <CatTranslator flair = '^^' name = {'mochi'}/> 
+  );
+}
+const ChatScreen2 = ({navigation, route}) => {
+  return (
+      <CatTranslator flair = ':3' name = {'maru'}/> 
   );
 }
 
