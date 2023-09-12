@@ -1,0 +1,118 @@
+{
+  "providers": {
+    "awscloudformation": {
+      "AuthRoleName": "amplify-testapp-staging-214748-authRole",
+      "UnauthRoleArn": "arn:aws:iam::689327587447:role/amplify-testapp-staging-214748-unauthRole",
+      "AuthRoleArn": "arn:aws:iam::689327587447:role/amplify-testapp-staging-214748-authRole",
+      "Region": "us-east-1",
+      "DeploymentBucketName": "amplify-testapp-staging-214748-deployment",
+      "UnauthRoleName": "amplify-testapp-staging-214748-unauthRole",
+      "StackName": "amplify-testapp-staging-214748",
+      "StackId": "arn:aws:cloudformation:us-east-1:689327587447:stack/amplify-testapp-staging-214748/5a951c10-4e91-11ee-941c-0e25903f90eb",
+      "AmplifyAppId": "d3qiarhbl2vj55"
+    }
+  },
+  "auth": {
+    "testapp": {
+      "customAuth": false,
+      "dependsOn": [],
+      "frontendAuthConfig": {
+        "mfaConfiguration": "OFF",
+        "mfaTypes": [
+          "SMS"
+        ],
+        "passwordProtectionSettings": {
+          "passwordPolicyMinLength": 8,
+          "passwordPolicyCharacters": [
+            "REQUIRES_LOWERCASE",
+            "REQUIRES_NUMBERS",
+            "REQUIRES_SYMBOLS",
+            "REQUIRES_UPPERCASE"
+          ]
+        },
+        "signupAttributes": [
+          "EMAIL"
+        ],
+        "socialProviders": [],
+        "usernameAttributes": [
+          "EMAIL"
+        ],
+        "verificationMechanisms": [
+          "EMAIL"
+        ]
+      },
+      "providerPlugin": "awscloudformation",
+      "service": "Cognito",
+      "output": {
+        "UserPoolId": "us-east-1_SWSz4PC5Z",
+        "AppClientIDWeb": "ma6acohmv3sjhcdjb90vm51be",
+        "AppClientID": "3jp6t31afue3u6jo7n6la32qr4",
+        "IdentityPoolId": "us-east-1:2fbd8133-7dbc-4c37-861d-00d101d51dce",
+        "UserPoolArn": "arn:aws:cognito-idp:us-east-1:689327587447:userpool/us-east-1_SWSz4PC5Z",
+        "IdentityPoolName": "testAuthIdentityPool__staging",
+        "UserPoolName": "testapp"
+      },
+      "lastPushTimeStamp": "2023-09-11T16:36:26.724Z",
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-testapp-staging-214748-deployment/amplify-cfn-templates/auth/testapp-cloudformation-template.json",
+        "logicalId": "authtestapp"
+      },
+      "lastPushDirHash": "pCdx80I279z3Wgw/wNcxMTcCsAM="
+    }
+  },
+  "function": {
+    "CustomerHandler": {
+      "build": true,
+      "providerPlugin": "awscloudformation",
+      "service": "Lambda",
+      "lastBuildTimeStamp": "2023-09-11T16:35:22.684Z",
+      "lastBuildType": "PROD",
+      "lastPackageTimeStamp": "2023-09-11T16:35:22.799Z",
+      "distZipFilename": "CustomerHandler-2b6b3451647657446931-build.zip",
+      "s3Bucket": {
+        "deploymentBucketName": "amplify-testapp-staging-214748-deployment",
+        "s3Key": "amplify-builds/CustomerHandler-2b6b3451647657446931-build.zip"
+      },
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-testapp-staging-214748-deployment/amplify-cfn-templates/function/CustomerHandler-cloudformation-template.json",
+        "logicalId": "functionCustomerHandler"
+      },
+      "lastPushTimeStamp": "2023-09-11T16:36:28.443Z",
+      "output": {
+        "LambdaExecutionRoleArn": "arn:aws:iam::689327587447:role/testappLambdaRole5ba6be08-staging",
+        "Region": "us-east-1",
+        "Arn": "arn:aws:lambda:us-east-1:689327587447:function:CustomerHandler-staging",
+        "Name": "CustomerHandler-staging",
+        "LambdaExecutionRole": "testappLambdaRole5ba6be08-staging"
+      },
+      "lastPushDirHash": "kG1kww+3g6eqT3N4SvjLpWsQEOU="
+    }
+  },
+  "api": {
+    "hw1testapp": {
+      "service": "API Gateway",
+      "providerPlugin": "awscloudformation",
+      "dependsOn": [
+        {
+          "category": "function",
+          "resourceName": "CustomerHandler",
+          "attributes": [
+            "Name",
+            "Arn"
+          ]
+        }
+      ],
+      "providerMetadata": {
+        "s3TemplateURL": "https://s3.amazonaws.com/amplify-testapp-staging-214748-deployment/amplify-cfn-templates/api/hw1testapp-cloudformation-template.json",
+        "logicalId": "apihw1testapp"
+      },
+      "lastPushTimeStamp": "2023-09-11T16:36:26.794Z",
+      "output": {
+        "ApiName": "hw1testapp",
+        "RootUrl": "https://q8w9a8k360.execute-api.us-east-1.amazonaws.com/staging",
+        "ApiId": "q8w9a8k360"
+      },
+      "lastPushDirHash": "zmMMgayOgAbn00YRc7p8i0h/ykc="
+    }
+  }
+}
