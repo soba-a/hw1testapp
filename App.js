@@ -1,11 +1,12 @@
 import * as React from 'react';
 import {useState} from 'react';
-import { Image, KeyboardAvoidingView, Button} from 'react-native';
+import { Image, KeyboardAvoidingView, Button, ActivityIndicator} from 'react-native';
 import {Text, TextInput, View, StyleSheet} from 'react-native';
 import { NavigationContainer } from '@react-navigation/native';
 import { useEffect } from 'react';
 import { createNativeStackNavigator } from '@react-navigation/native-stack';
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { FontAwesome5 } from '@expo/vector-icons'; 
 import { withAuthenticator } from '@aws-amplify/ui-react-native';
 import { Amplify, Auth, API} from 'aws-amplify';
 import awsExports from './aws-exports';
@@ -157,6 +158,7 @@ const MyTabs = () => {
         />
         <Tab.Screen name="Profile" component={ProfileTab} />
         <Tab.Screen name="Chats" component={ChatsTab} />
+        <Tab.Screen name="Princess" component={PrincessTab} />
       </Tab.Navigator>
     </NavigationContainer>
   );
@@ -166,6 +168,7 @@ const HomeTab = ({ navigation }) => {
     <KeyboardAvoidingView style = 'container' behavior='padding'>
       <GetAmplifyApi/>
       <Text>Welcome! Let's translate what your cat is saying by going to the Chats tab!</Text> 
+      <Text style={{fontSize: 16, fontWeight:'bold'}}>Princess adds: Dogs Rule!</Text>
       <Button title="Sign Out" onPress={signOut} />
     </KeyboardAvoidingView>
   );
@@ -213,6 +216,19 @@ const ChatScreen2 = ({navigation, route}) => {
   return (
       <CatTranslator flair = ':3' name = {'maru'}/> 
   );
+}
+
+const PrincessTab = () => {
+  return (
+    <View style={[{backgroundColor: '#a4e1ff'}, styles.container]}>
+      <View style={{display: 'inline-block'}}>
+        <FontAwesome5 name="crown" size={24} color="black" />
+        <Text style={{fontSize: 24}}>Princess was here</Text>
+      </View>
+      <Text>This will load forever</Text>
+      <ActivityIndicator size="large" color="#00ff00"/>
+    </View>
+  )
 }
 
 const App = () => {
